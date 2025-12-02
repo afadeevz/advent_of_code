@@ -82,6 +82,6 @@ func parseHistory(s string) (history History) {
 		history = append(history, int(tmp))
 	}
 
-	slices.Reverse[History](history)
+	slices.Reverse(history)
 	return
 }

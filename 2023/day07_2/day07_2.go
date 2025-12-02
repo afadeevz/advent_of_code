@@ -141,7 +141,7 @@ func (h Hand) Type() HandType {
 
 	bestHandType := HighCard
 	copy := h
-	copy.cards = slices.Clone[[]Card](copy.cards)
+	copy.cards = slices.Clone(copy.cards)
 	for combination := 0; combination < combinationsCount; combination++ {
 		x := combination
 		for i := 0; i < 5; i++ {
@@ -188,7 +188,7 @@ func main() {
 func run(input io.Reader) int {
 	hands := parseInput(input)
 
-	slices.SortFunc[[]Hand](hands, compareHands)
+	slices.SortFunc(hands, compareHands)
 
 	answer := 0
 	for i, hand := range hands {

@@ -126,6 +126,8 @@ func (s *Solver) solve(idx int, numIdx int, curLen int) int {
 	}
 }
 
+var _ = solveSlow(nil, nil)
+
 func solveSlow(spring Spring, nums []int) (answer int) {
 	indices := make([]int, 0, len(spring))
 	combinations := 1

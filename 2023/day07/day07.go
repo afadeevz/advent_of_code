@@ -141,7 +141,7 @@ func main() {
 func run(input io.Reader) int {
 	hands := parseInput(input)
 
-	slices.SortFunc[[]Hand](hands, compareHands)
+	slices.SortFunc(hands, compareHands)
 
 	answer := 0
 	for i, hand := range hands {
