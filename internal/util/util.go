@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"iter"
 	"strconv"
@@ -49,9 +50,10 @@ func AssertOdd(x int) {
 	}
 }
 
-func Lines(in io.Reader) iter.Seq[string] {
+func ScanSeq(in io.Reader, splitFunc bufio.SplitFunc) iter.Seq[string] {
 	return func(yield func(string) bool) {
 		scanner := bufio.NewScanner(in)
+		scanner.Split(splitFunc)
 		for scanner.Scan() {
 			line := scanner.Text()
 
@@ -60,6 +62,10 @@ func Lines(in io.Reader) iter.Seq[string] {
 			}
 		}
 	}
+}
+
+func Lines(in io.Reader) iter.Seq[string] {
+	return ScanSeq(in, bufio.ScanLines)
 }
 
 func MapIter[From, To any](seq iter.Seq[From], fn func(From) To) iter.Seq[To] {
@@ -79,6 +85,11 @@ func ParseLines[T any](in io.Reader, parse func(string) T) iter.Seq[T] {
 	return MapIter(lines, parse)
 }
 
+func ParseSeq[T any](in io.Reader, splitFunc bufio.SplitFunc, parse func(string) T) iter.Seq[T] {
+	strs := ScanSeq(in, splitFunc)
+	return MapIter(strs, parse)
+}
+
 func Modulo(n, mod int) int {
 	n %= mod
 	if n < 0 {
@@ -96,4 +107,16 @@ func Sign(n int) int {
 	default:
 		return 0
 	}
+}
+
+func SplitComma(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	if i := bytes.IndexByte(data, ','); i >= 0 {
+		return i + 1, data[0:i], nil
+	}
+
+	if atEOF && len(data) > 0 {
+		return len(data), data, nil
+	}
+
+	return 0, nil, nil
 }
